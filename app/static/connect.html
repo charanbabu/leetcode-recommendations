@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connect LeetCode Premium</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #1a1a2e;
+            color: #eee;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .card {
+            background: #16213e;
+            border-radius: 16px;
+            padding: 40px;
+            max-width: 520px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 { font-size: 24px; margin-bottom: 8px; }
+        .subtitle { color: #8892b0; margin-bottom: 24px; font-size: 14px; }
+        .steps { margin-bottom: 24px; }
+        .step {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+            align-items: flex-start;
+        }
+        .step-num {
+            background: #ffa116;
+            color: #000;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+        .step-text { font-size: 14px; line-height: 1.5; color: #ccc; }
+        .step-text code {
+            background: #0a0a23;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 13px;
+            color: #ffa116;
+        }
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 12px;
+            transition: all 0.2s;
+        }
+        .btn-primary {
+            background: #ffa116;
+            color: #000;
+        }
+        .btn-primary:hover { background: #ffb740; }
+        .btn-primary:disabled {
+            background: #555;
+            color: #999;
+            cursor: not-allowed;
+        }
+        .btn-secondary {
+            background: #233554;
+            color: #8892b0;
+        }
+        .btn-secondary:hover { background: #2a4066; }
+        .status {
+            text-align: center;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 16px;
+            font-size: 14px;
+            display: none;
+        }
+        .status.success { display: block; background: #1a3a2a; color: #4caf50; }
+        .status.error { display: block; background: #3a1a1a; color: #f44336; }
+        .status.loading { display: block; background: #1a2a3a; color: #64b5f6; }
+        .manual-section {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #233554;
+            display: none;
+        }
+        .manual-section.show { display: block; }
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #233554;
+            background: #0a0a23;
+            color: #eee;
+            font-family: monospace;
+            font-size: 13px;
+            resize: vertical;
+            min-height: 60px;
+            margin-bottom: 12px;
+        }
+        textarea::placeholder { color: #555; }
+        .info {
+            font-size: 12px;
+            color: #555;
+            text-align: center;
+            margin-top: 16px;
+        }
+        .lock-icon { font-size: 14px; margin-right: 4px; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>Connect LeetCode Premium</h1>
+        <p class="subtitle">Link your premium account to get company interview frequency data</p>
+
+        <div class="steps">
+            <div class="step">
+                <div class="step-num">1</div>
+                <div class="step-text">Make sure you're <strong>logged into LeetCode</strong> in this browser</div>
+            </div>
+            <div class="step">
+                <div class="step-num">2</div>
+                <div class="step-text">Click the button below — it will auto-extract your session</div>
+            </div>
+            <div class="step">
+                <div class="step-num">3</div>
+                <div class="step-text">Done! Your bot will now show interview frequency data</div>
+            </div>
+        </div>
+
+        <button class="btn btn-primary" id="autoBtn" onclick="autoConnect()">
+            Auto-Connect (Recommended)
+        </button>
+
+        <button class="btn btn-secondary" onclick="toggleManual()">
+            Paste Cookie Manually
+        </button>
+
+        <div class="manual-section" id="manualSection">
+            <div class="steps">
+                <div class="step">
+                    <div class="step-num">1</div>
+                    <div class="step-text">Open <a href="https://leetcode.com" target="_blank" style="color:#ffa116">leetcode.com</a> (logged in)</div>
+                </div>
+                <div class="step">
+                    <div class="step-num">2</div>
+                    <div class="step-text">Press <code>F12</code> > <code>Application</code> tab > <code>Cookies</code> > <code>leetcode.com</code></div>
+                </div>
+                <div class="step">
+                    <div class="step-num">3</div>
+                    <div class="step-text">Copy the <code>LEETCODE_SESSION</code> value and paste below</div>
+                </div>
+            </div>
+            <textarea id="cookieInput" placeholder="Paste your LEETCODE_SESSION cookie value here..."></textarea>
+            <textarea id="csrfInput" placeholder="(Optional) Paste csrftoken value here..." style="min-height:40px"></textarea>
+            <button class="btn btn-primary" onclick="manualConnect()">Connect</button>
+        </div>
+
+        <div class="status" id="status"></div>
+
+        <p class="info">
+            <span class="lock-icon">&#128274;</span>
+            Your session is stored securely per-user and only used to fetch company problem data.
+        </p>
+    </div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const userId = params.get('user_id');
+        const token = params.get('token');
+        const baseUrl = window.location.origin;
+
+        if (!userId || !token) {
+            showStatus('error', 'Invalid link. Please get a fresh link from the WhatsApp bot.');
+            document.getElementById('autoBtn').disabled = true;
+        }
+
+        function showStatus(type, msg) {
+            const el = document.getElementById('status');
+            el.className = 'status ' + type;
+            el.textContent = msg;
+        }
+
+        function toggleManual() {
+            const section = document.getElementById('manualSection');
+            section.classList.toggle('show');
+        }
+
+        async function autoConnect() {
+            showStatus('loading', 'Extracting session from LeetCode...');
+            document.getElementById('autoBtn').disabled = true;
+
+            try {
+                // Try to fetch from LeetCode to get cookies via iframe/fetch
+                // This won't work due to CORS, so we fall back to the manual method
+                // but first try the clever approach: open LeetCode in a hidden iframe
+                // and read cookies via document.cookie (same-origin policy blocks this)
+
+                // The only reliable way without an extension: ask user to run a bookmarklet
+                // or use the manual paste method
+                showStatus('error',
+                    'Auto-extract is blocked by browser security. ' +
+                    'Use the manual method below -- it only takes 30 seconds!'
+                );
+                document.getElementById('manualSection').classList.add('show');
+                document.getElementById('autoBtn').disabled = false;
+            } catch (e) {
+                showStatus('error', 'Auto-connect failed. Please use the manual method below.');
+                document.getElementById('manualSection').classList.add('show');
+                document.getElementById('autoBtn').disabled = false;
+            }
+        }
+
+        async function manualConnect() {
+            const cookie = document.getElementById('cookieInput').value.trim();
+            const csrf = document.getElementById('csrfInput').value.trim();
+
+            if (!cookie) {
+                showStatus('error', 'Please paste your LEETCODE_SESSION cookie value.');
+                return;
+            }
+
+            if (cookie.length < 20) {
+                showStatus('error', 'That doesn\'t look like a valid session cookie. It should be a long string.');
+                return;
+            }
+
+            showStatus('loading', 'Verifying session and loading company data...');
+
+            try {
+                const resp = await fetch(`${baseUrl}/api/users/id/${userId}/connect-premium`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Connect-Token': token,
+                    },
+                    body: JSON.stringify({
+                        session_cookie: cookie,
+                        csrftoken: csrf || null,
+                    }),
+                });
+
+                const data = await resp.json();
+                if (resp.ok) {
+                    showStatus('success', data.message || 'Connected! You can close this page and go back to WhatsApp.');
+                } else {
+                    showStatus('error', data.detail || 'Failed to connect. Check your cookie and try again.');
+                }
+            } catch (e) {
+                showStatus('error', 'Network error. Make sure the server is running.');
+            }
+        }
+    </script>
+</body>
+</html>

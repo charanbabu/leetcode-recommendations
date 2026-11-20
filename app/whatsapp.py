@@ -42,3 +42,46 @@ def format_daily_problem(problem_title: str, difficulty: str, slug: str, hint: s
         f"Just reply naturally — tell me when you've solved it, "
         f"ask for hints, or paste your code for a review!"
     )
+
+
+def format_daily_plan_message(plan: list[dict], streak_text: str = "") -> str:
+    """Format a multi-problem daily plan for WhatsApp."""
+    difficulty_emoji = {"easy": "🟢", "medium": "🟡", "hard": "🔴"}
+
+    # Count by difficulty
+    diff_counts: dict[str, int] = {"easy": 0, "medium": 0, "hard": 0}
+    for item in plan:
+        diff_counts[item["slot"]] += 1
+
+    mix_parts = []
+    for d in ("easy", "medium", "hard"):
+        if diff_counts[d] > 0:
+            mix_parts.append(f"{diff_counts[d]} {d.capitalize()}")
+    mix_str = " | ".join(mix_parts)
+
+    lines = [
+        f"*Today's LeetCode Plan* ({len(plan)} problems)",
+        f"Mix: {mix_str}",
+    ]
+
+    if streak_text:
+        lines.append(streak_text)
+
+    lines.append("")  # blank line
+
+    for i, item in enumerate(plan, 1):
+        p = item["problem"]
+        emoji = difficulty_emoji.get(item["slot"], "⚪")
+        lines.append(
+            f"{i}. {emoji} *{p.title}* ({item['slot'].capitalize()})\n"
+            f"   {item['reason']}\n"
+            f"   https://leetcode.com/problems/{p.slug}/"
+        )
+
+    lines.append("")
+    lines.append(
+        "Reply with the problem number when done (e.g. 'solved 1'), "
+        "ask for a hint, or paste code for review!"
+    )
+
+    return "\n".join(lines)

@@ -25,6 +25,18 @@ class Settings(BaseSettings):
 
     # Scheduler
     daily_send_hour: int = 8  # 8am in user's timezone (default UTC)
+    daily_problem_count: int = 6  # problems per day (mix of topics/difficulties)
+
+    # Autonomous features
+    auto_seed_on_startup: bool = True
+    auto_seed_max_problems: int = 3500
+    followup_after_hours: int = 6  # nudge user X hours after sending a problem
+    weekly_report_day: int = 0  # 0=Monday
+    weekly_report_hour: int = 9  # 9am in user's timezone
+    sync_interval_hours: int = 6  # sync LeetCode profiles every X hours
+    enable_followups: bool = True
+    enable_weekly_reports: bool = True
+    enable_streak_reminders: bool = True
 
     class Config:
         env_file = ".env"

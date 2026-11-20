@@ -42,6 +42,19 @@ class User(Base):
     target_company: Mapped[str | None] = mapped_column(String(100), nullable=True)
     last_topic_index: Mapped[int] = mapped_column(Integer, default=-1, nullable=False)
     daily_send_hour: Mapped[int] = mapped_column(Integer, default=8, nullable=False)
+    lc_total_solved: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    lc_easy_solved: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    lc_medium_solved: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    lc_hard_solved: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    lc_tag_counts: Mapped[str | None] = mapped_column(Text, nullable=True)  # JSON: {"Array": 66, "DP": 15, ...}
+    lc_session_cookie: Mapped[str | None] = mapped_column(Text, nullable=True)
+    lc_csrftoken: Mapped[str | None] = mapped_column(String(200), nullable=True)
+    is_premium: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    streak: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    longest_streak: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    last_solve_date: Mapped[str | None] = mapped_column(String(10), nullable=True)  # YYYY-MM-DD
+    last_active_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    followup_sent_today: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), onupdate=func.now()
